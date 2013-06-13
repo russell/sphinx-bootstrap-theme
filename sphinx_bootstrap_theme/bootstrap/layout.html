@@ -3,7 +3,7 @@
   {% set script_files = script_files + [
     '_static/js/jquery-1.9.1.min.js',
     '_static/js/jquery-fix.js',
-    '_static/bootstrap-2.3.2/js/bootstrap.min.js',
+    '_static/bootstrap-2.3.2/js/bootstrap.js',
     '_static/bootstrap-sphinx.js'
   ]
 %}
@@ -18,10 +18,12 @@
 %}
 {% endif %}
 {% set css_files = css_files + [
+    '_static/bootstrap-2.3.2/css/bootstrap-responsive.min.css',
     '_static/bootstrap-sphinx.css',
-    '_static/bootstrap-2.3.2/css/bootstrap-responsive.min.css'
   ]
 %}
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and
+                         (sidebars != []) %}
 
 {%- block doctype -%}
 <!DOCTYPE html>
@@ -45,16 +47,16 @@
         <div class="nav-collapse">
           <ul class="nav">
             <li class="divider-vertical"></li>
-            {% block sidebartoc %}
+            {% block navbartoc %}
               {% include "globaltoc.html" %}
               {% include "localtoc.html" %}
             {% endblock %}
-            {% block sidebarrel %}
-              {% include "relations.html" %}
-            {% endblock %}
-            {% if theme_source_link_position == "nav" %}
-              <li>{% include "sourcelink.html" %}</li>
-            {% endif %}
+            <!-- {% block sidebarrel %} -->
+            <!--   {% include "relations.html" %} -->
+            <!-- {% endblock %} -->
+            <!-- {% if theme_source_link_position == "nav" %} -->
+            <!--   <li>{% include "sourcelink.html" %}</li> -->
+            <!-- {% endif %} -->
           </ul>
 
           {% block sidebarsearch %}
@@ -66,6 +68,22 @@
   </div>
 {% endmacro %}
 
+{%- macro bsidebar() %}
+      {%- if render_sidebar %}
+      <div class="span3">
+        <div id="sidebar" class="bs-sidenav well" data-spy="affix">
+          {%- if sidebars != None %}
+            {#- new style sidebar: explicitly include/exclude templates #}
+            {%- for sidebartemplate in sidebars %}
+            {%- include sidebartemplate %}
+            {%- endfor %}
+          {%- endif %}
+        </div>
+      </div>
+      {%- endif %}
+{%- endmacro %}
+
+
 {%- block extrahead %}
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -75,7 +93,6 @@
 
 {# Silence the sidebar's, relbar's #}
 {% block header %}{% endblock %}
-{% block sidebar1 %}{% endblock %}
 {% block sidebar2 %}{% endblock %}
 {% block relbar1 %}{% endblock %}
 {% block relbar2 %}{% endblock %}
@@ -84,7 +101,12 @@
 {%- block content %}
 {{ navBar() }}
 <div class="container">
-  {% block body %}{% endblock %}
+  <div class="row">
+    {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
+    <div class="span9">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
 </div>
 {%- endblock %}
 
@@ -115,4 +137,8 @@
     </p>
   </div>
 </footer>
+
+{%- for cssfile in css_files %}
+<link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
+{%- endfor %}
 {%- endblock %}

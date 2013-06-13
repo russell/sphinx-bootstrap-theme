@@ -57,16 +57,30 @@
      * Scroll the window to avoid the topnav bar
      * https://github.com/twitter/bootstrap/issues/1768
      */
-    if ($("#navbar.navbar-fixed-top").length > 0) {
-      var navHeight = $("#navbar").height(),
-        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
+    // if ($("#navbar.navbar-fixed-top").length > 0) {
+    //   var navHeight = $("#navbar").height(),
+    //     shiftWindow = function() { scrollBy(0, -navHeight - 10); };
 
-      if (location.hash) {
-        shiftWindow();
-      }
+    //   if (location.hash) {
+    //     shiftWindow();
+    //   }
 
-      window.addEventListener("hashchange", shiftWindow);
-    }
+    // New dropdown renderer
+    // $(".nav li.toctree-l1.current").addClass("active");
+
+    // $(".nav li.toctree-l1").each(
+    //   function (i, e) {
+    //     $(e).addClass('dropdown');
+    //     $(e).children("a").addClass('dropdown-toggle').append('<b class="caret"></b>')
+    //       .attr("href", "#").attr("data-toggle", "dropdown");
+    //     $(e).children("ul").addClass('dropdown-menu').attr("role", "menu");
+    //     $(".nav ul.current").parent().append(e);
+
+    //   });
+    // $(".nav ul.current").remove();
+
+    //   window.addEventListener("hashchange", shiftWindow);
+    // }
 
     // Add styling, structure to TOC's.
     $(".dropdown-menu").each(function () {
@@ -83,6 +97,10 @@
       // Remove Global TOC.
       $(".globaltoc-container").remove();
     }
+
+    // Local TOC.
+    $(".bs-sidenav ul").addClass("nav nav-list");
+    $(".bs-sidenav > ul > li > a").addClass("nav-header");
 
     // Local TOC.
     patchToc($("ul.localtoc"), 2);
