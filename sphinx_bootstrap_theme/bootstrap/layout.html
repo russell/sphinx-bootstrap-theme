@@ -22,8 +22,10 @@
     '_static/bootstrap-sphinx.css',
   ]
 %}
-{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and
-                         (sidebars != []) %}
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and sidebars %}
+
+{%- set bs_content_span = render_sidebar and "span9" or "span12"%}
+
 
 {%- block doctype -%}
 <!DOCTYPE html>
@@ -49,14 +51,14 @@
             <li class="divider-vertical"></li>
             {% block navbartoc %}
               {% include "globaltoc.html" %}
-              {% include "localtoc.html" %}
+              {% include "navbartoc.html" %}
             {% endblock %}
-            <!-- {% block sidebarrel %} -->
-            <!--   {% include "relations.html" %} -->
-            <!-- {% endblock %} -->
-            <!-- {% if theme_source_link_position == "nav" %} -->
-            <!--   <li>{% include "sourcelink.html" %}</li> -->
-            <!-- {% endif %} -->
+            {% block sidebarrel %}
+              {% include "relations.html" %}
+            {% endblock %}
+            {% if theme_source_link_position == "nav" %}
+              <li>{% include "sourcelink.html" %}</li>
+            {% endif %}
           </ul>
 
           {% block sidebarsearch %}
@@ -72,12 +74,9 @@
       {%- if render_sidebar %}
       <div class="span3">
         <div id="sidebar" class="bs-sidenav well" data-spy="affix">
-          {%- if sidebars != None %}
-            {#- new style sidebar: explicitly include/exclude templates #}
-            {%- for sidebartemplate in sidebars %}
+          {%- for sidebartemplate in sidebars %}
             {%- include sidebartemplate %}
-            {%- endfor %}
-          {%- endif %}
+          {%- endfor %}
         </div>
       </div>
       {%- endif %}
@@ -93,7 +92,6 @@
 
 {# Silence the sidebar's, relbar's #}
 {% block header %}{% endblock %}
-{% block sidebar2 %}{% endblock %}
 {% block relbar1 %}{% endblock %}
 {% block relbar2 %}{% endblock %}
 {% block sidebarsourcelink %}{% endblock %}
@@ -103,9 +101,10 @@
 <div class="container">
   <div class="row">
     {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
-    <div class="span9">
+    <div class="{{ bs_content_span }}">
       {% block body %}{% endblock %}
     </div>
+    {% block sidebar2 %} {# possible location for sidebar #} {% endblock %}
   </div>
 </div>
 {%- endblock %}
