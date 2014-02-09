@@ -78,14 +78,27 @@
     });
 
     // Global TOC.
-    if ($("ul.globaltoc li").length) {
-      patchToc($("ul.globaltoc"), 1);
+    $("li.globaltoc-container > ul")
+      .addClass("first-level");
+
+    if ($("ul.first-level li").length) {
+      // merge global toc's together
+      $("li.globaltoc-container").append("<ul class=\"dropdown-menu globaltoc\"></ul>");
+      $("li.globaltoc-container ul").addClass("dropdown-menu");
+      $("li.globaltoc-container li.toctree-l1").each(
+        function () {
+          $("ul.globaltoc").append(this);
+        });
+      $("ul.first-level").remove();
+      patchToc($("ul.globaltoc"), 0);
+
     } else {
       // Remove Global TOC.
       $(".globaltoc-container").remove();
     }
 
     // Local TOC.
+    $("li.localtoc-container > ul").addClass("dropdown-menu localtoc");
     $(".bs-sidenav ul").addClass("nav nav-list");
     $(".bs-sidenav > ul > li > a").addClass("nav-header");
 
